@@ -143,8 +143,8 @@ ray_files = [
     "ray/streaming/_streaming.so",
 ]
 
-if BUILD_JAVA or os.path.exists(
-        os.path.join(ROOT_DIR, "ray/jars/ray_dist.jar")):
+if BUILD_JAVA or os.path.exists(os.path.join(ROOT_DIR,
+                                             "ray/jars/ray_dist.jar")):
     ray_files.append("ray/jars/ray_dist.jar")
 
 if setup_spec.type == SetupType.RAY_CPP:
@@ -386,8 +386,9 @@ def replace_symlinks_with_junctions():
     for link, default in _LINKS.items():
         path = os.path.join(root_dir, link)
         try:
-            out = subprocess.check_output(
-                "DIR /A:LD /B", shell=True, cwd=os.path.dirname(path))
+            out = subprocess.check_output("DIR /A:LD /B",
+                                          shell=True,
+                                          cwd=os.path.dirname(path))
         except subprocess.CalledProcessError:
             out = b""
         if os.path.basename(path) in out.decode("utf8").splitlines():
@@ -479,19 +480,23 @@ def build(build_python, build_java, build_cpp):
     # TODO(rkn): Fix this.
     if not os.getenv("SKIP_THIRDPARTY_INSTALL"):
         pip_packages = ["psutil", "setproctitle==1.2.2", "colorama"]
-        subprocess.check_call(
-            [
-                sys.executable, "-m", "pip", "install", "-q",
-                "--target=" + os.path.join(ROOT_DIR, THIRDPARTY_SUBDIR)
-            ] + pip_packages,
-            env=dict(os.environ, CC="gcc"))
+        subprocess.check_call([
+            sys.executable, "-m", "pip", "install", "-q",
+            "--target=" + os.path.join(ROOT_DIR, THIRDPARTY_SUBDIR)
+        ] + pip_packages,
+                              env=dict(os.environ, CC="gcc"))
 
-    subprocess.check_call(
-        [
-            sys.executable, "-m", "pip", "install", "-U", ".",
-        ],
-        cwd=os.path.join(ROOT_DIR, "ray/cloudpickle-generators"),
-        env=dict(os.environ, CC="gcc"))
+    subprocess.check_call([
+        sys.executable,
+        "-m",
+        "pip",
+        "install",
+        "-U",
+        ".",
+    ],
+                          cwd=os.path.join(ROOT_DIR,
+                                           "ray/cloudpickle-generators"),
+                          env=dict(os.environ, CC="gcc"))
 
     bazel_flags = ["--verbose_failures"]
     if BAZEL_LIMIT_CPUS:
@@ -501,10 +506,10 @@ def build(build_python, build_java, build_cpp):
     if not is_automated_build:
         bazel_precmd_flags = []
     if is_automated_build:
-        root_dir = os.path.join(
-            os.path.abspath(os.environ["SRC_DIR"]), "..", "bazel-root")
-        out_dir = os.path.join(
-            os.path.abspath(os.environ["SRC_DIR"]), "..", "b-o")
+        root_dir = os.path.join(os.path.abspath(os.environ["SRC_DIR"]), "..",
+                                "bazel-root")
+        out_dir = os.path.join(os.path.abspath(os.environ["SRC_DIR"]), "..",
+                               "b-o")
 
         for d in (root_dir, out_dir):
             if not os.path.exists(d):
@@ -529,10 +534,10 @@ def build(build_python, build_java, build_cpp):
     if setup_spec.build_type == BuildType.TSAN:
         bazel_flags.extend(["--config=tsan"])
 
-    return bazel_invoke(
-        subprocess.check_call,
-        bazel_precmd_flags + ["build"] + bazel_flags + ["--"] + bazel_targets,
-        env=bazel_env)
+    return bazel_invoke(subprocess.check_call,
+                        bazel_precmd_flags + ["build"] + bazel_flags + ["--"] +
+                        bazel_targets,
+                        env=bazel_env)
 
 
 def walk_directory(directory):
@@ -695,10 +700,10 @@ setuptools.setup(
     author="Ray Team",
     author_email="ray-dev@googlegroups.com",
     description=(setup_spec.description),
-    long_description=io.open(
-        os.path.join(ROOT_DIR, os.path.pardir, "README.rst"),
-        "r",
-        encoding="utf-8").read(),
+    long_description=io.open(os.path.join(ROOT_DIR, os.path.pardir,
+                                          "README.rst"),
+                             "r",
+                             encoding="utf-8").read(),
     url="https://github.com/ray-project/ray",
     keywords=("ray distributed parallel machine-learning hyperparameter-tuning"
               "reinforcement-learning deep-learning serving python"),
@@ -716,15 +721,13 @@ setuptools.setup(
     setup_requires=["cython >= 0.29.15", "wheel"],
     extras_require=setup_spec.extras,
     ext_modules=[
-        setuptools.Extension(
-            'ray.cloudpickle.generator._core',
-            ['cloudpickle/generator/_core.c'],
-            extra_compile_args=[
-                '-Wall',
-                '-Wextra',
-                '-Wno-missing-field-initializers',
-            ]
-        ),
+        setuptools.Extension('ray.cloudpickle.generator._core',
+                             ['cloudpickle/generator/_core.c'],
+                             extra_compile_args=[
+                                 '-Wall',
+                                 '-Wextra',
+                                 '-Wno-missing-field-initializers',
+                             ]),
     ],
     entry_points={
         "console_scripts": [
