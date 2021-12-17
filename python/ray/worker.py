@@ -2301,3 +2301,15 @@ def remote(*args, **kwargs):
         retry_exceptions=retry_exceptions,
         concurrency_groups=concurrency_groups or [],
         scheduling_strategy=scheduling_strategy)
+
+
+
+# @PublicAPI
+# def remote(*args, **kwargs):
+#     worker = global_worker
+#
+#     if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
+#         # This is the case where the decorator is just @ray.remote.
+#         return make_decorator(worker=worker)(args[0])
+
+

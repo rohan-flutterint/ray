@@ -88,6 +88,7 @@ cdef class ObjectRef(BaseID):
         # it up.
         c_bool in_core_worker
         c_string call_site_data
+        object _actor
 
     cdef CObjectID native(self)
 
